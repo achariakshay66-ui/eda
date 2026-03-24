@@ -1,0 +1,124 @@
+# import libraries
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+
+# load dataset
+df = pd.read_csv("/content/WA_Fn-UseC_-Telco-Customer-Churn.csv")
+df.head(10)          # shows first 10 rows
+df.shape             #  Show Dataset Size (rows, columns)
+df.columns           # Show Column Names
+df.info()            # basic information about the dataset structure.
+df.describe()        # statistical summary of numerical columns.
+df.isnull().sum()    # To check null values
+
+# Convert TotalCharges to numeric
+df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
+df = df.dropna()        # Remove Missing Rows
+df.shape
+df.info()
+
+# Churn Distribution
+ax = sns.countplot(x="Churn", data=df)
+plt.title("Customer Churn Distribution")
+plt.xlabel("Churn")
+plt.ylabel("Number of Customers")
+for i in ax.containers:
+    ax.bar_label(i)
+plt.show()
+
+# Contract Type Distribution
+ax = sns.countplot(x="Contract", data=df)
+plt.title("Distribution of Contract Types")
+plt.xlabel("Contract Type")
+plt.ylabel("Number of Customers")
+for container in ax.containers:
+    ax.bar_label(container)
+plt.show()
+
+# Contract Type Distribution
+ax = sns.countplot(x="Contract", hue="Churn", data=df)
+plt.title("Churn by Contract Type")
+plt.xlabel("Contract Type")
+plt.ylabel("Number of Customers")
+for container in ax.containers:
+    ax.bar_label(container)
+plt.show()
+
+# Churn by Gender
+ax = sns.countplot(x="gender", hue="Churn", data=df)
+plt.title("Churn by Gender")
+plt.xlabel("Gender")
+plt.ylabel("Number of Customers")
+for container in ax.containers:
+    ax.bar_label(container)
+plt.show()
+
+df["SeniorCitizen"] = df["SeniorCitizen"].replace({0: "Not Senior Citizen", 1: "Senior Citizen"})
+
+# Churn by Senior Citizen
+ax = sns.countplot(x="SeniorCitizen", hue="Churn", data=df)
+plt.title("Churn by Senior Citizen")
+plt.xlabel("Customer Type")
+plt.ylabel("Number of Customers")
+for container in ax.containers:
+    ax.bar_label(container)
+plt.show()
+
+# Internet Service vs Churn
+ax = sns.countplot(x="InternetService", hue="Churn", data=df)
+plt.title("Churn by Internet Service Type")
+plt.xlabel("Internet Service Type")
+plt.ylabel("Number of Customers")
+for container in ax.containers:
+    ax.bar_label(container)
+plt.show()
+
+# Monthly Charges Distribution
+sns.histplot(df["MonthlyCharges"], bins=30)
+plt.title("Distribution of Monthly Charges")
+plt.xlabel("Monthly Charges")
+plt.ylabel("Number of Customers")
+plt.show()
+
+# Tenure Distribution
+sns.histplot(df["tenure"], bins=30)
+plt.title("Distribution of Customer Tenure")
+plt.xlabel("Tenure (Months)")
+plt.ylabel("Number of Customers")
+plt.show()
+
+# Payment Method Distribution
+plt.figure(figsize=(8,5))
+sns.countplot(x="PaymentMethod", hue="Churn", data=df)
+plt.title("Churn by Payment Method")
+plt.xlabel("Payment Method")
+plt.ylabel("Number of Customers")
+plt.xticks(rotation=45)
+plt.show()
+
+# Monthly Charges vs Churn
+sns.boxplot(x="Churn", y="MonthlyCharges", data=df)
+plt.title("Monthly Charges vs Churn")
+plt.xlabel("Churn")
+plt.ylabel("Monthly Charges")
+plt.show()
+
+# Tenure vs Monthly Charges
+sns.scatterplot(x="tenure", y="MonthlyCharges", hue="Churn", data=df)
+plt.title("Tenure vs Monthly Charges")
+plt.xlabel("Tenure (Months)")
+plt.ylabel("Monthly Charges")
+plt.show()
+
+# pair plot
+sns.pairplot(df[["tenure","MonthlyCharges","TotalCharges"]])
+plt.show()
+
+# Correlation Heatmap
+corr = df[["tenure", "MonthlyCharges", "TotalCharges"]].corr()
+sns.heatmap(corr, annot=True, cmap="coolwarm")
+plt.title("Correlation Heatmap of Numerical Features")
+plt.show()
